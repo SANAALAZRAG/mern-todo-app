@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import api from "../axiosConfig";
 
-const AuthForm = ({ setToken }) => {
+const AuthForm = ({ setToken, setUser }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLogin, setIsLogin] = useState(true);
@@ -16,8 +16,12 @@ const AuthForm = ({ setToken }) => {
       const res = await api.post(endpoint, { email, password });
       
       if (isLogin) {
-        // Stockez le token et mettez à jour l'état
+        // Stockez le token et les informations utilisateur
         localStorage.setItem("token", res.data.token);
+        if (res.data.user) {
+          localStorage.setItem("user", JSON.stringify(res.data.user));
+          setUser(res.data.user);
+        }
         setToken(res.data.token);
       } else {
         // Inscription réussie, passez à la connexion
